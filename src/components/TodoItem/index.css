@@ -1,0 +1,19 @@
+/* Write your CSS here */
+.todo-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.title {
+  font-size: large;
+  color: #000000;
+  font-weight: 400;
+}
+.button {
+  background-color: #ffffff;
+  border: 2px solid #ff0b37;
+  color: #ff0b37;
+  padding: 5px;
+  border-radius: 5px;
+}

@@ -42,6 +42,117 @@ const initialTodosList = [
 class SimpleTodos extends Component {
   state = {
     todosList: initialTodosList,
+    newTodoInput: '',
+    editingTodoId: null,
+  }
+
+  addTodo = () => {
+    this.setState(prevState => {
+      const {newTodoInput} = prevState
+      let [title, count] = newTodoInput.split(/ (\d+)$/)
+
+      title = title.trim()
+      count = parseInt(count, 10) || 1
+
+      if (title === '') {
+        alert('Please enter a valid title for the new todo.')
+        return null
+      }
+
+      const newTodos = Array.from({length: count}, (_, index) => ({
+        id: prevState.todosList.length + index + 1,
+        title,
+      }))
+
+      return {
+        todosList: [...prevState.todosList, ...newTodos],
+        newTodoInput: '',
+      }
+    })
+  }
+
+  editTodo = id => {
+    this.setState({
+      editingTodoId: id,
+    })
+  }
+
+  saveTodo = (id, updatedTitle) => {
+    this.setState(prevState => {
+      const updatedTodosList = prevState.todosList.map(todo =>
+        todo.id === id ? {...todo, title: updatedTitle} : todo,
+      )
+
+      return {
+        todosList: updatedTodosList,
+        editingTodoId: null,
+      }
+    })
+  }
+
+  deleteTodo = id => {
+    this.setState(prevState => ({
+      todosList: prevState.todosList.filter(todo => todo.id !== id),
+    }))
+  }
+
+  handleCheckboxChange = id => {
+    this.setState(prevState => ({
+      todosList: prevState.todosList.map(todo =>
+        todo.id === id ? {...todo, completed: !todo.completed} : todo,
+      ),
+    }))
+  }
+
+  handleInputChange = event => {
+    this.setState({
+      newTodoInput: event.target.value,
+    })
+  }
+
+  render() {
+    const {todosList, newTodoInput, editingTodoId} = this.state
+
+    return (
+      <div className="app-container">
+        <div className="simple-todos-container">
+          <h1 className="heading">Simple Todos</h1>
+          <div className="add-todo-container">
+            <input
+              type="text"
+              placeholder="New Todo"
+              value={newTodoInput}
+              onChange={this.handleInputChange}
+            />
+            <button type="button" onClick={this.addTodo}>
+              Add
+            </button>
+          </div>
+          <ul className="todos-list">
+            {todosList.map(eachTodo => (
+              <TodoItem
+                key={eachTodo.id}
+                todoDetails={eachTodo}
+                deleteTodo={this.deleteTodo}
+                editTodo={this.editTodo}
+                saveTodo={this.saveTodo}
+                isEditing={editingTodoId === eachTodo.id}
+                handleCheckboxChange={this.handleCheckboxChange}
+              />
+            ))}
+          </ul>
+        </div>
+      </div>
+    )
+  }
+}
+
+export default SimpleTodos
+
+/*
+class SimpleTodos extends Component {
+  state = {
+    todosList: initialTodosList,
   }
 
   deleteTodo = id => {
@@ -76,3 +187,4 @@ class SimpleTodos extends Component {
 }
 
 export default SimpleTodos
+*/
